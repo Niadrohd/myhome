@@ -1,0 +1,86 @@
+{
+    "@@locale": "fr",
+    "appTitle": "MyHome",
+    "newRecipe": "Nouvelle recette",
+    "savedRecipeMessage": "Recette enregistrée: {name}",
+    "@savedRecipeMessage": {
+        "placeholders": {
+            "name": {
+                "type": "String",
+                "example": "poulet coco"
+            }
+        }
+    },
+    "recipeName": "Nom du plat",
+    "preparationTime": "Temps de preparation {unit}",
+    "@preparationTime": {
+        "placeholders": {
+            "unit": {
+                "type": "String"
+            }
+        }
+    },
+    "cookingTime": "Temps de cuisine {unit}",
+    "@cookingTime": {
+        "placeholders": {
+            "unit": {
+                "type": "String"
+            }
+        }
+    },
+    "recipeLink": "Lien vers la recette",
+    "ingredients": "Ingrédients",
+    "ingredient": "Ingrédient",
+    "quantity": "Quantité",
+    "save": "Enregistrer",
+    "invalidInputMessage": "Veuillez renseigner une entrée valide",
+    "emptyIngredientMessage": "Impossible d'ajouter une quantité sans spécifier d'ingrédient",
+    "myRecipes": "Mes recettes",
+    "noRecipesYetMessage": "Pas encore de recette enregistrée",
+    "preparationTimePreviewMessage": "Temps de preparation: {Time}",
+    "@preparationTimePreviewMessage": {
+        "placeholders": {
+            "Time": {
+                "type": "String"
+            }
+        }
+    },
+    "cookingTimePreviewMessage": "Temps de cuisine: {Time}",
+    "@cookingTimePreviewMessage": {
+        "placeholders": {
+            "Time": {
+                "type": "String"
+            }
+        }
+    },
+    "delete": "Supprimer",
+    "unplanned": "Déprogrammer",
+    "myMenu": "Mon menu",
+    "numberOfMeals": "{number} repas",
+    "@numberOfMeals": {
+        "placeholders": {
+            "number": {
+                "type": "String"
+            }
+        }
+    },
+    "monday": "Lundi",
+    "tuesday": "Mardi",
+    "wednesday": "Mercredi",
+    "thursday": "Jeudi",
+    "friday": "Vendredi",
+    "saturday": "Samedi",
+    "sunday": "Dimanche",
+    "unscheduled": "Non programmés",
+    "scheduleRecipeMessage": "Programmer",
+    "register": "S'enregistrer",
+    "login": "Se connecter",
+    "logout": "Se déconnecter",
+    "addNewItemTitle": "Ajouter un nouvel article",
+    "itemNameLabel": "Nom",
+    "itemDetailsLabel": "Détails",
+    "itemQuantityLabel": "Quantité",
+    "itemUnitLabel": "Unité",
+    "saveButtonLabel": "Enregistrer",
+    "cancelButtonLabel": "Annuler"
+}

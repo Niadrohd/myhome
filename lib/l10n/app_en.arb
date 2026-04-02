@@ -1,0 +1,113 @@
+{
+    "@@locale": "en",
+    "appTitle": "MyHome",
+    "@appTitle": {
+        "description": "The title of the application"
+    },
+    "newRecipe": "New recipe",
+    "@newRecipe": {},
+    "savedRecipeMessage": "Saved recipe: {name}",
+    "@savedRecipeMessage": {
+        "placeholders": {
+            "name": {
+                "type": "String",
+                "example": "chicken coconut"
+            }
+        }
+    },
+    "recipeName": "Recipe name",
+    "@recipeName": {},
+    "cookingTime": "Cooking time {unit}",
+    "@cookingTime": {
+        "placeholders": {
+            "unit": {
+                "type": "String"
+            }
+        }
+    },
+    "preparationTime": "Preparation time {unit}",
+    "@preparationTime": {
+        "placeholders": {
+            "unit": {
+                "type": "String"
+            }
+        }
+    },
+    "recipeLink": "Link to the recipe",
+    "@recipeLink": {},
+    "ingredients": "Ingredients",
+    "@ingredients": {},
+    "ingredient": "Ingredient",
+    "@ingredient": {},
+    "quantity": "Quantity",
+    "@quantity": {},
+    "save": "Save",
+    "@save": {},
+    "invalidInputMessage": "Please enter a valid text",
+    "@invalidInputMessage": {},
+    "emptyIngredientMessage": "Can't add a quantity without specifying an ingredient",
+    "@emptyIngredientMessage": {},
+    "myRecipes": "My recipes",
+    "@myRecipes": {},
+    "noRecipesYetMessage": "No registered recipe yet",
+    "@noRecipesYetMessage": {},
+    "cookingTimePreviewMessage": "Cooking time: {Time}",
+    "@cookingTimePreviewMessage": {
+        "placeholders": {
+            "Time": {
+                "type": "String"
+            }
+        }
+    },
+    "preparationTimePreviewMessage": "Preparation time: {Time}",
+    "@preparationTimePreviewMessage": {
+        "placeholders": {
+            "Time": {
+                "type": "String"
+            }
+        }
+    },
+    "delete": "Delete",
+    "@delete": {},
+    "unplanned": "Unplanned",
+    "@unplanned": {},
+    "myMenu": "My menu",
+    "@myMenu": {},
+    "numberOfMeals": "{number} meals",
+    "@numberOfMeals": {
+        "placeholders": {
+            "number": {
+                "type": "String"
+            }
+        }
+    },
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday",
+    "unscheduled": "Unscheduled",
+    "scheduleRecipeMessage": "Schedule",
+    "register": "Register",
+    "@register": {},
+    "login": "Login",
+    "@login": {},
+    "logout": "Logout",
+    "@logout": {},
+    "addNewItemTitle": "Add New Item",
+    "@addNewItemTitle": {},
+    "itemNameLabel": "Name",
+    "@itemNameLabel": {},
+    "itemDetailsLabel": "Details",
+    "@itemDetailsLabel": {},
+    "itemQuantityLabel": "Quantity",
+    "@itemQuantityLabel": {},
+    "itemUnitLabel": "Unit",
+    "@itemUnitLabel": {},
+    "saveButtonLabel": "Save",
+    "@saveButtonLabel": {},
+    "cancelButtonLabel": "Cancel",
+    "@cancelButtonLabel": {}
+}

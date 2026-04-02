@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "48929464388",
+    "project_id": "home-stock-app-db",
+    "storage_bucket": "home-stock-app-db.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:48929464388:android:f64c2f95303a9ce84ddc11",
+        "android_client_info": {
+          "package_name": "com.example.home_stock"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDj-OINuFcwpk-bC5CuEDJfD5f_u5LPJxI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:48929464388:android:669ad5eec3a2572c4ddc11",
+        "android_client_info": {
+          "package_name": "com.example.myhome"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDj-OINuFcwpk-bC5CuEDJfD5f_u5LPJxI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:48929464388:android:7086863028b08a284ddc11",
+        "android_client_info": {
+          "package_name": "e.dhordain.home_stock"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDj-OINuFcwpk-bC5CuEDJfD5f_u5LPJxI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
