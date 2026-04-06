@@ -36,7 +36,7 @@ class RecipesListPage extends HookConsumerWidget {
           final recipe = recipes[index];
           final planned = plannedAsync.value ?? [];
           final isFavorite =
-              planned.where((fav) => fav.recipe.id == recipe.id).isNotEmpty;
+              planned.where((fav) => fav.recipeId == recipe.id).isNotEmpty;
 
           return Dismissible(
             key: ValueKey(recipe.id),
@@ -60,10 +60,9 @@ class RecipesListPage extends HookConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(str.delete,
-                      style: const TextStyle(
-                          fontSize: 18, color: Colors.white)),
-                  const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 15)),
+                      style:
+                          const TextStyle(fontSize: 18, color: Colors.white)),
+                  const Padding(padding: EdgeInsets.symmetric(horizontal: 15)),
                   const Icon(Icons.delete, color: Colors.white),
                 ],
               ),
@@ -73,16 +72,14 @@ class RecipesListPage extends HookConsumerWidget {
               subtitle: Text(
                   'Time: ${recipe.preparationTime} + ${recipe.cookingTime} min'),
               leading: const CircleAvatar(
-                foregroundImage:
-                    AssetImage('assets/images/repas_img.jpg'),
+                foregroundImage: AssetImage('assets/images/repas_img.jpg'),
               ),
               trailing: IconButton(
                 icon: isFavorite
                     ? const Icon(Icons.favorite)
                     : const Icon(Icons.favorite_border),
                 onPressed: () async {
-                  final hid =
-                      ref.read(currentHouseholdIdProvider).value;
+                  final hid = ref.read(currentHouseholdIdProvider).value;
                   if (hid == null) return;
                   await ref
                       .read(plannedRecipesRepositoryProvider)
@@ -106,8 +103,7 @@ class RecipesListPage extends HookConsumerWidget {
       title: str.myRecipes,
       page: recipesAsync.when(
         data: buildList,
-        loading: () =>
-            const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('Erreur: $e')),
       ),
     );

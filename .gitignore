@@ -54,3 +54,4 @@ app.*.map.json
 *.config.dart
 lib/generated_plugin_registrant.dart
 lib/l10n/app_localizations.dart
+pubspec.lock

@@ -43,14 +43,15 @@ class RecipesRepository {
   Recipe _fromDoc(DocumentSnapshot<Map<String, dynamic>> d) {
     final data = d.data()!;
     final ingredientsData =
-        (data['ingredients'] as List<dynamic>?) ?? [];
+        (data['ingredients'] as Map<String, dynamic>?) ?? {};
     final ingredients = Ingredients(
-      ingredientsData
-          .map((i) => Ingredient(
-                name: (i['name'] as String?) ?? '',
-                quantity: (i['quantity'] as String?) ?? '',
-              ))
-          .toList(),
+      (ingredientsData['ingredients'] as List<dynamic>?)
+              ?.map((i) => Ingredient(
+                    name: (i['name'] as String?) ?? '',
+                    quantity: (i['quantity'] as String?) ?? '',
+                  ))
+              .toList() ??
+          [],
     );
     return Recipe(
       id: d.id,
