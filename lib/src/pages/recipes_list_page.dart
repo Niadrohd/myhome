@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:myhome/routes/named_routes.dart';
 import 'package:myhome/src/extensions/translations.dart';
 import 'package:myhome/src/models/recipe.dart';
+import 'package:myhome/src/components/add_fab.dart';
 import 'package:myhome/src/my_navigator.dart';
 import 'package:myhome/src/providers/household_providers.dart';
 import 'package:myhome/src/providers/planned_recipes_provider.dart';
@@ -101,10 +102,22 @@ class RecipesListPage extends HookConsumerWidget {
 
     return MyNavigator(
       title: str.myRecipes,
-      page: recipesAsync.when(
-        data: buildList,
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Erreur: $e')),
+      page: Stack(
+        children: [
+          recipesAsync.when(
+            data: buildList,
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (e, _) => Center(child: Text('Erreur: $e')),
+          ),
+          AddFab(
+            onPressed: () {
+              Navigator.pushReplacementNamed(
+                context,
+                RoutesName.createRecipe.path,
+              );
+            },
+          ),
+        ],
       ),
     );
   }
