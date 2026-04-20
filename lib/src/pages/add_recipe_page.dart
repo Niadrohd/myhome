@@ -18,7 +18,6 @@ class AddRecipePage extends StatelessWidget {
           ),
         ),
       ),
-      showCentralButton: false,
     );
   }
 }
