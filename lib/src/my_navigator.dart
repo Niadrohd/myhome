@@ -48,6 +48,11 @@ class MyNavigator extends ConsumerWidget {
               ref: ref,
             ),
             NavigatorIcon(
+              routeName: RoutesName.todoLists,
+              iconData: Icons.checklist,
+              ref: ref,
+            ),
+            NavigatorIcon(
               routeName: RoutesName.stock,
               iconData: Icons.inventory_2_outlined,
               ref: ref,
