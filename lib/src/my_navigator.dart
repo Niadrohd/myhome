@@ -9,12 +9,10 @@ class MyNavigator extends ConsumerWidget {
     super.key,
     required this.title,
     required this.page,
-    this.showCentralButton = true,
   });
 
   final Widget page;
   final String title;
-  final bool showCentralButton;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -57,21 +55,6 @@ class MyNavigator extends ConsumerWidget {
           ],
         ),
       ),
-      floatingActionButton: showCentralButton
-          ? FloatingActionButton.large(
-              shape: const CircleBorder(),
-              backgroundColor: MyColors.terracotta,
-              foregroundColor: Colors.white,
-              onPressed: () {
-                Navigator.pushReplacementNamed(
-                  context,
-                  RoutesName.createRecipe.path,
-                );
-              },
-              child: const Icon(Icons.add),
-            )
-          : null,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

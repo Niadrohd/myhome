@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:myhome/routes/named_routes.dart';
 import 'package:myhome/src/extensions/translations.dart';
 import 'package:myhome/src/models/recipe.dart';
+import 'package:myhome/src/components/add_fab.dart';
 import 'package:myhome/src/my_navigator.dart';
 import 'package:myhome/src/providers/household_providers.dart';
 import 'package:myhome/src/providers/planned_recipes_provider.dart';
@@ -16,7 +17,6 @@ class RecipesListPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final recipesAsync = ref.watch(recipesProvider);
-    final plannedAsync = ref.watch(plannedRecipesProvider);
     final str = context.l;
 
     Widget buildList(List<Recipe> recipes) {
@@ -34,9 +34,7 @@ class RecipesListPage extends HookConsumerWidget {
         ),
         itemBuilder: (context, index) {
           final recipe = recipes[index];
-          final planned = plannedAsync.value ?? [];
-          final isFavorite =
-              planned.where((fav) => fav.recipe.id == recipe.id).isNotEmpty;
+          final isFavoriteAsync = ref.watch(isRecipePlannedProvider(recipe.id));
 
           return Dismissible(
             key: ValueKey(recipe.id),
@@ -60,10 +58,9 @@ class RecipesListPage extends HookConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(str.delete,
-                      style: const TextStyle(
-                          fontSize: 18, color: Colors.white)),
-                  const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 15)),
+                      style:
+                          const TextStyle(fontSize: 18, color: Colors.white)),
+                  const Padding(padding: EdgeInsets.symmetric(horizontal: 15)),
                   const Icon(Icons.delete, color: Colors.white),
                 ],
               ),
@@ -73,20 +70,21 @@ class RecipesListPage extends HookConsumerWidget {
               subtitle: Text(
                   'Time: ${recipe.preparationTime} + ${recipe.cookingTime} min'),
               leading: const CircleAvatar(
-                foregroundImage:
-                    AssetImage('assets/images/repas_img.jpg'),
+                foregroundImage: AssetImage('assets/images/repas_img.jpg'),
               ),
               trailing: IconButton(
-                icon: isFavorite
-                    ? const Icon(Icons.favorite)
-                    : const Icon(Icons.favorite_border),
+                icon: isFavoriteAsync.maybeWhen(
+                  data: (isFav) => isFav
+                      ? const Icon(Icons.favorite)
+                      : const Icon(Icons.favorite_border),
+                  orElse: () => const Icon(Icons.favorite_border),
+                ),
                 onPressed: () async {
-                  final hid =
-                      ref.read(currentHouseholdIdProvider).value;
+                  final hid = ref.read(currentHouseholdIdProvider).value;
                   if (hid == null) return;
                   await ref
                       .read(plannedRecipesRepositoryProvider)
-                      .switchRecipe(hid, recipe, planned);
+                      .switchRecipe(hid, recipe.id);
                 },
               ),
               onTap: () {
@@ -104,11 +102,22 @@ class RecipesListPage extends HookConsumerWidget {
 
     return MyNavigator(
       title: str.myRecipes,
-      page: recipesAsync.when(
-        data: buildList,
-        loading: () =>
-            const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Erreur: $e')),
+      page: Stack(
+        children: [
+          recipesAsync.when(
+            data: buildList,
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (e, _) => Center(child: Text('Erreur: $e')),
+          ),
+          AddFab(
+            onPressed: () {
+              Navigator.pushReplacementNamed(
+                context,
+                RoutesName.createRecipe.path,
+              );
+            },
+          ),
+        ],
       ),
     );
   }

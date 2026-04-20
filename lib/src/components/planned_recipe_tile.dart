@@ -5,6 +5,7 @@ import 'package:myhome/src/extensions/translations.dart';
 import 'package:myhome/src/models/planned_recipe.dart';
 import 'package:myhome/src/providers/household_providers.dart';
 import 'package:myhome/src/providers/planned_recipes_provider.dart';
+import 'package:myhome/src/providers/recipes_provider.dart';
 import 'package:myhome/src/utils.dart';
 import 'package:myhome/src/utils/week.dart';
 import 'package:myhome/src/utils/wrap_semantics.dart';
@@ -17,7 +18,9 @@ class PlannedRecipeTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final str = context.l;
-    final recipe = plannedRecipe.recipe;
+    final recipe = ref.watch(recipesProvider).value!.firstWhere(
+          (r) => r.id == plannedRecipe.recipeId,
+        );
     return ListTile(
       tileColor: MyColors.pastel,
       title: Text(recipe.name.capitalize()),
@@ -27,8 +30,7 @@ class PlannedRecipeTile extends ConsumerWidget {
           Text(recipe.ingredients.getNames().join(', ')),
           Text(str.preparationTimePreviewMessage(
               recipe.preparationTime.toString())),
-          Text(str.cookingTimePreviewMessage(
-              recipe.cookingTime.toString())),
+          Text(str.cookingTimePreviewMessage(recipe.cookingTime.toString())),
           ScheduleDrawList(recipe: plannedRecipe),
         ],
       ),
@@ -87,8 +89,7 @@ class ScheduleDrawList extends ConsumerWidget {
         child: wrapSemantics(
           isTile: true,
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 2, horizontal: 6),
+            padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 6),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [

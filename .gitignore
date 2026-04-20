@@ -30,7 +30,7 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
-/build/
+/build/*
 !/build/web/
 !/build/web/**
 /coverage/
@@ -47,11 +47,10 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /ios/Flutter/.last_build_id
-/web/
 
 # Generated files
 *.g.dart
 *.freezed.dart
 *.config.dart
-lib/generated_plugin_registrant.dart
 lib/l10n/app_localizations.dart
+pubspec.lock
