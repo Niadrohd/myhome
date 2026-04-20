@@ -31,6 +31,8 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+!/build/web/
+!/build/web/**
 /coverage/
 pubspec.lock
 
@@ -45,7 +47,6 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /ios/Flutter/.last_build_id
-/build/
 /web/
 
 # Generated files
