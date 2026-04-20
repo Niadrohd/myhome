@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+
 import 'todo_item.dart';
 
 @immutable
@@ -36,12 +38,19 @@ class TodoList {
         .map((item) => TodoItem.fromJson(item))
         .toList();
 
+    DateTime createdAt = DateTime.now();
+    final createdAtValue = json['createdAt'];
+    if (createdAtValue is Timestamp) {
+      createdAt = createdAtValue.toDate();
+    } else if (createdAtValue is String) {
+      createdAt = DateTime.tryParse(createdAtValue) ?? DateTime.now();
+    }
+
     return TodoList(
       id: id,
       name: json['name'] as String? ?? '',
       items: itemsList,
-      createdAt: DateTime.tryParse(json['createdAt'] as String? ?? '') ??
-          DateTime.now(),
+      createdAt: createdAt,
     );
   }
 
