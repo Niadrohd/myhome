@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:myhome/src/components/add_fab.dart';
 import 'package:myhome/src/components/new_item_dialog.dart';
 import 'package:myhome/src/my_navigator.dart';
 import 'package:myhome/src/providers/household_providers.dart';
@@ -17,7 +18,6 @@ class StockPage extends ConsumerWidget {
 
     return MyNavigator(
       title: 'Stocks',
-      showCentralButton: false,
       page: Stack(
         children: [
           itemsAsync.when(
@@ -105,26 +105,20 @@ class StockPage extends ConsumerWidget {
                 const Center(child: CircularProgressIndicator()),
             error: (e, _) => Center(child: Text('Erreur: $e')),
           ),
-          Positioned(
-            bottom: 16,
-            right: 16,
-            child: FloatingActionButton(
-              child: const Icon(Icons.add),
-              onPressed: () {
-                final hid = hidAsync.value;
-                if (hid == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('Household ID is null')),
-                  );
-                  return;
-                }
-                showDialog(
-                  context: context,
-                  builder: (context) => NewItemDialog(hid: hid),
+          AddFab(
+            onPressed: () {
+              final hid = hidAsync.value;
+              if (hid == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Household ID is null')),
                 );
-              },
-            ),
+                return;
+              }
+              showDialog(
+                context: context,
+                builder: (context) => NewItemDialog(hid: hid),
+              );
+            },
           ),
         ],
       ),

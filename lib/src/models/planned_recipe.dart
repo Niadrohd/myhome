@@ -1,30 +1,29 @@
 import 'package:flutter/foundation.dart';
 import 'package:myhome/src/utils/week.dart';
-import 'recipe.dart';
 
 @immutable
 class PlannedRecipe {
   final String id;
-  final Recipe recipe;
+  final String recipeId;
   final int quantity;
   final Week schedule;
 
   const PlannedRecipe({
     required this.id,
-    required this.recipe,
+    required this.recipeId,
     required this.quantity,
     required this.schedule,
   });
 
   PlannedRecipe copyWith({
     String? id,
-    Recipe? recipe,
+    String? recipeId,
     int? quantity,
     Week? schedule,
   }) =>
       PlannedRecipe(
         id: id ?? this.id,
-        recipe: recipe ?? this.recipe,
+        recipeId: recipeId ?? this.recipeId,
         quantity: quantity ?? this.quantity,
         schedule: schedule ?? this.schedule,
       );
@@ -38,10 +37,10 @@ class PlannedRecipe {
       other is PlannedRecipe &&
           runtimeType == other.runtimeType &&
           id == other.id &&
-          recipe == other.recipe &&
+          recipeId == other.recipeId &&
           quantity == other.quantity &&
           schedule == other.schedule;
 
   @override
-  int get hashCode => Object.hash(id, recipe, quantity, schedule);
+  int get hashCode => Object.hash(id, recipeId, quantity, schedule);
 }

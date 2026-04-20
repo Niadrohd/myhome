@@ -51,7 +51,6 @@ class RecipeDetailsPage extends ConsumerWidget {
           ),
         ),
       ),
-      showCentralButton: false,
     );
   }
 }
