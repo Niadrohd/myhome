@@ -8,6 +8,8 @@ import 'package:myhome/src/pages/menu_page.dart';
 import 'package:myhome/src/pages/recipe_details_page.dart';
 import 'package:myhome/src/pages/recipes_list_page.dart';
 import 'package:myhome/src/pages/stock_page.dart';
+import 'package:myhome/src/pages/todo_lists_page.dart';
+import 'package:myhome/src/pages/todo_list_details_page.dart';
 import 'package:myhome/theme/colors.dart';
 
 import 'l10n/app_localizations.dart';
@@ -52,6 +54,13 @@ class MyHomeApp extends StatelessWidget {
           return customPageRoute(RecipeDetailsPage(recipe: args['recipe']));
         } else if (settings.name == RoutesName.stock.path) {
           return customPageRoute(const StockPage());
+        } else if (settings.name == RoutesName.todoLists.path) {
+          return customPageRoute(const TodoListsPage());
+        } else if (settings.name == '/todo_list_details') {
+          final args = settings.arguments as Map<String, dynamic>;
+          return customPageRoute(
+            TodoListDetailsPage(listId: args['listId'] as String),
+          );
         }
         return customPageRoute(const AuthGate());
       },

@@ -4,6 +4,7 @@ enum RoutesName {
   menu,
   recipeDetails,
   stock,
+  todoLists,
 }
 
 extension RoutesNameExtension on RoutesName {
@@ -19,6 +20,8 @@ extension RoutesNameExtension on RoutesName {
         return '/recipe_details';
       case RoutesName.stock:
         return '/stock';
+      case RoutesName.todoLists:
+        return '/todo_lists';
     }
   }
 }

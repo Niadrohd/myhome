@@ -22,6 +22,7 @@ dependencies:
   intl: any
   url_launcher: ^6.3.1
   flutter_gen: ^5.13.0+1
+  uuid: ^4.0.0
 
 dev_dependencies:
   flutter_test:
