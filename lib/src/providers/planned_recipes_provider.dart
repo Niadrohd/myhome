@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:myhome/src/models/planned_recipe.dart';
 import 'package:myhome/src/repositories/planned_recipes_repository.dart';
+
 import 'firebase_providers.dart';
 import 'household_providers.dart';
 
@@ -19,4 +20,10 @@ final plannedRecipesProvider = StreamProvider<List<PlannedRecipe>>((ref) {
     loading: () => const Stream.empty(),
     error: (_, __) => const Stream.empty(),
   );
+});
+
+final isRecipePlannedProvider =
+    FutureProvider.family<bool, String>((ref, recipeId) async {
+  final plannedRecipesAsync = await ref.watch(plannedRecipesProvider.future);
+  return plannedRecipesAsync.any((planned) => planned.recipeId == recipeId);
 });

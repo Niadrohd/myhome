@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:myhome/src/models/recipe.dart';
 import 'package:myhome/src/utils/week.dart';
 
 @immutable
@@ -19,7 +18,6 @@ class PlannedRecipe {
   PlannedRecipe copyWith({
     String? id,
     String? recipeId,
-    Recipe? recipe,
     int? quantity,
     Week? schedule,
   }) =>

@@ -16,7 +16,6 @@ class RecipesListPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final recipesAsync = ref.watch(recipesProvider);
-    final plannedAsync = ref.watch(plannedRecipesProvider);
     final str = context.l;
 
     Widget buildList(List<Recipe> recipes) {
@@ -34,9 +33,7 @@ class RecipesListPage extends HookConsumerWidget {
         ),
         itemBuilder: (context, index) {
           final recipe = recipes[index];
-          final planned = plannedAsync.value ?? [];
-          final isFavorite =
-              planned.where((fav) => fav.recipeId == recipe.id).isNotEmpty;
+          final isFavoriteAsync = ref.watch(isRecipePlannedProvider(recipe.id));
 
           return Dismissible(
             key: ValueKey(recipe.id),
@@ -75,15 +72,18 @@ class RecipesListPage extends HookConsumerWidget {
                 foregroundImage: AssetImage('assets/images/repas_img.jpg'),
               ),
               trailing: IconButton(
-                icon: isFavorite
-                    ? const Icon(Icons.favorite)
-                    : const Icon(Icons.favorite_border),
+                icon: isFavoriteAsync.maybeWhen(
+                  data: (isFav) => isFav
+                      ? const Icon(Icons.favorite)
+                      : const Icon(Icons.favorite_border),
+                  orElse: () => const Icon(Icons.favorite_border),
+                ),
                 onPressed: () async {
                   final hid = ref.read(currentHouseholdIdProvider).value;
                   if (hid == null) return;
                   await ref
                       .read(plannedRecipesRepositoryProvider)
-                      .switchRecipe(hid, recipe, planned);
+                      .switchRecipe(hid, recipe.id);
                 },
               ),
               onTap: () {

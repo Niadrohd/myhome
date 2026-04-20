@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:myhome/src/models/planned_recipe.dart';
-import 'package:myhome/src/models/recipe.dart';
 import 'package:myhome/src/utils/week.dart';
 
 class PlannedRecipesRepository {
@@ -21,12 +20,12 @@ class PlannedRecipesRepository {
 
   Future<void> addPlannedRecipe(
     String householdId, {
-    required Recipe recipe,
+    required String recipeId,
     int quantity = 2,
     Week schedule = Week.other,
   }) {
     return _plannedRef(householdId).add({
-      'recipe_id': recipe.id,
+      'recipe_id': recipeId,
       'quantity': quantity,
       'schedule': schedule.name,
     });
@@ -47,15 +46,15 @@ class PlannedRecipesRepository {
 
   Future<void> switchRecipe(
     String householdId,
-    Recipe recipe,
-    List<PlannedRecipe> currentPlanned,
+    String recipeId,
   ) async {
-    final existing =
-        currentPlanned.where((pr) => pr.recipeId == recipe.id).firstOrNull;
-    if (existing == null) {
-      await addPlannedRecipe(householdId, recipe: recipe);
+    final docs = await _plannedRef(householdId)
+        .where('recipe_id', isEqualTo: recipeId)
+        .get();
+    if (docs.docs.isNotEmpty) {
+      await docs.docs.first.reference.delete();
     } else {
-      await deletePlannedRecipe(householdId, existing.id);
+      await addPlannedRecipe(householdId, recipeId: recipeId);
     }
   }
 
