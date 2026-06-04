@@ -179,6 +179,12 @@ abstract class AppLocalizations {
   /// **'My recipes'**
   String get myRecipes;
 
+  /// No description provided for @search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get search;
+
   /// No description provided for @noRecipesYetMessage.
   ///
   /// In en, this message translates to:

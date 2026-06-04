@@ -49,6 +49,8 @@
     "@emptyIngredientMessage": {},
     "myRecipes": "My recipes",
     "@myRecipes": {},
+    "search": "Search",
+    "@search": {},
     "noRecipesYetMessage": "No registered recipe yet",
     "@noRecipesYetMessage": {},
     "cookingTimePreviewMessage": "Cooking time: {Time}",

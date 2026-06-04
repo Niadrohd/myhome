@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:myhome/routes/named_routes.dart';
 import 'package:myhome/src/extensions/translations.dart';
@@ -18,10 +19,10 @@ class RecipesListPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final recipesAsync = ref.watch(recipesProvider);
     final str = context.l;
+    final searchController = useTextEditingController();
+    final query = useState('');
 
     Widget buildList(List<Recipe> recipes) {
-      if (recipes.isEmpty) return Text(str.noRecipesYetMessage);
-
       return ListView.builder(
         itemCount: recipes.length,
         prototypeItem: const Dismissible(
@@ -119,10 +120,60 @@ class RecipesListPage extends HookConsumerWidget {
       title: str.myRecipes,
       page: Stack(
         children: [
-          recipesAsync.when(
-            data: buildList,
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (e, _) => Center(child: Text('Erreur: $e')),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                child: TextField(
+                  controller: searchController,
+                  onChanged: (value) => query.value = value,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.search),
+                    hintText: '${str.search}...',
+                    isDense: true,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    suffixIcon: query.value.isEmpty
+                        ? null
+                        : IconButton(
+                            icon: const Icon(Icons.clear),
+                            tooltip: str.delete,
+                            onPressed: () {
+                              searchController.clear();
+                              query.value = '';
+                            },
+                          ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: recipesAsync.when(
+                  data: (recipes) {
+                    if (recipes.isEmpty) {
+                      return Center(child: Text(str.noRecipesYetMessage));
+                    }
+                    final q = query.value.trim().toLowerCase();
+                    final filtered = q.isEmpty
+                        ? recipes
+                        : recipes
+                            .where((r) =>
+                                r.name.toLowerCase().contains(q) ||
+                                r.ingredients
+                                    .getNames()
+                                    .any((n) => n.toLowerCase().contains(q)))
+                            .toList();
+                    if (filtered.isEmpty) {
+                      return Center(child: Text(str.noRecipesYetMessage));
+                    }
+                    return buildList(filtered);
+                  },
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  error: (e, _) => Center(child: Text('Erreur: $e')),
+                ),
+              ),
+            ],
           ),
           AddFab(
             onPressed: () {

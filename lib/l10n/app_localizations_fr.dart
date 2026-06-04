@@ -57,6 +57,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get myRecipes => 'Mes recettes';
 
   @override
+  String get search => 'Rechercher';
+
+  @override
   String get noRecipesYetMessage => 'Pas encore de recette enregistrée';
 
   @override
