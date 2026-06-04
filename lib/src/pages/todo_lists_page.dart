@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:myhome/src/my_navigator.dart';
+import 'package:myhome/src/models/todo_list.dart';
 import 'package:myhome/src/providers/todo_lists_provider.dart';
 import 'package:myhome/src/providers/household_providers.dart';
 import 'package:myhome/theme/colors.dart';
@@ -43,8 +44,15 @@ class TodoListsPage extends HookConsumerWidget {
                         ),
                       ),
                     )
-                  : ListView.builder(
+                  : ReorderableListView.builder(
+                      buildDefaultDragHandles: false,
                       itemCount: todoLists.length,
+                      onReorder: (oldIndex, newIndex) => _reorderLists(
+                        ref,
+                        todoLists,
+                        oldIndex,
+                        newIndex,
+                      ),
                       itemBuilder: (context, index) {
                         final list = todoLists[index];
                         final itemCount = list.items.length;
@@ -52,6 +60,7 @@ class TodoListsPage extends HookConsumerWidget {
                             list.items.where((item) => item.isCompleted).length;
 
                         return Card(
+                          key: ValueKey(list.id),
                           margin: const EdgeInsets.symmetric(
                               horizontal: 16.0, vertical: 8.0),
                           child: ListTile(
@@ -76,6 +85,14 @@ class TodoListsPage extends HookConsumerWidget {
                                     list.id,
                                   ),
                                 ),
+                                ReorderableDragStartListener(
+                                  index: index,
+                                  child: const Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 8.0),
+                                    child: Icon(Icons.drag_handle),
+                                  ),
+                                ),
                               ],
                             ),
                             onTap: () {
@@ -97,6 +114,26 @@ class TodoListsPage extends HookConsumerWidget {
         error: (e, _) => Center(child: Text('Error: $e')),
       ),
     );
+  }
+
+  void _reorderLists(
+    WidgetRef ref,
+    List<TodoList> lists,
+    int oldIndex,
+    int newIndex,
+  ) {
+    // ReorderableListView reports an insertion index; adjust when moving down.
+    if (newIndex > oldIndex) newIndex -= 1;
+    final ids = lists.map((l) => l.id).toList();
+    final id = ids.removeAt(oldIndex);
+    ids.insert(newIndex, id);
+    _persistOrder(ref, ids);
+  }
+
+  void _persistOrder(WidgetRef ref, List<String> orderedIds) {
+    final householdId = ref.read(currentHouseholdIdProvider).value;
+    if (householdId == null) return;
+    ref.read(todosRepositoryProvider).reorderTodoLists(householdId, orderedIds);
   }
 
   void _showCreateListDialog(BuildContext context, WidgetRef ref) {
