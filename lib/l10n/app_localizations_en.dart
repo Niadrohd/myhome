@@ -60,6 +60,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get search => 'Search';
 
   @override
+  String get portions => 'Portions';
+
+  @override
   String get noRecipesYetMessage => 'No registered recipe yet';
 
   @override

@@ -98,7 +98,8 @@ class RecipesListPage extends HookConsumerWidget {
                       if (hid == null) return;
                       await ref
                           .read(plannedRecipesRepositoryProvider)
-                          .switchRecipe(hid, recipe.id);
+                          .switchRecipe(hid, recipe.id,
+                              portions: recipe.portions);
                     },
                   ),
                 ],

@@ -30,6 +30,11 @@ class RecipeDetailsPage extends ConsumerWidget {
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               const SizedBox(height: defaultTallVerticalPadding),
+              Text(
+                'Portions: ${recipe.portions}',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              const SizedBox(height: defaultTallVerticalPadding),
               Text('Link:',
                   style: Theme.of(context).textTheme.headlineSmall),
               InkWell(

@@ -51,6 +51,8 @@
     "@myRecipes": {},
     "search": "Search",
     "@search": {},
+    "portions": "Portions",
+    "@portions": {},
     "noRecipesYetMessage": "No registered recipe yet",
     "@noRecipesYetMessage": {},
     "cookingTimePreviewMessage": "Cooking time: {Time}",

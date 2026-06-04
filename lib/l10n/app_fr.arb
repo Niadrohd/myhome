@@ -37,6 +37,7 @@
     "emptyIngredientMessage": "Impossible d'ajouter une quantité sans spécifier d'ingrédient",
     "myRecipes": "Mes recettes",
     "search": "Rechercher",
+    "portions": "Portions",
     "noRecipesYetMessage": "Pas encore de recette enregistrée",
     "preparationTimePreviewMessage": "Temps de preparation: {Time}",
     "@preparationTimePreviewMessage": {

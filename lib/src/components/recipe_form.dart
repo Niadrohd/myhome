@@ -28,6 +28,7 @@ class CreateRecipeForm extends HookConsumerWidget {
     final preparationTimeController =
         useTextEditingController(text: recipe?.preparationTime.toString());
     final linkController = useTextEditingController(text: recipe?.link);
+    final portions = useState(recipe?.portions ?? 2);
 
     final ingredientsForm =
         IngredientsForm(initialIngredients: recipe?.ingredients);
@@ -62,6 +63,7 @@ class CreateRecipeForm extends HookConsumerWidget {
             cookingTime: cookingTime,
             link: linkController.text,
             ingredients: ingredients,
+            portions: portions.value,
           );
         } else {
           await repo.updateRecipe(
@@ -72,6 +74,7 @@ class CreateRecipeForm extends HookConsumerWidget {
             cookingTime: cookingTime,
             link: linkController.text,
             ingredients: ingredients,
+            portions: portions.value,
           );
         }
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -94,9 +97,39 @@ class CreateRecipeForm extends HookConsumerWidget {
               validate: false),
           _titledRecipeTextField(str.recipeLink, linkController,
               validate: false),
+          _portionsCounter(portions),
           ingredientsForm,
           const SizedBox(height: 20.0),
           ElevatedButton(onPressed: handleSaveRecipe, child: Text(str.save)),
+        ],
+      ),
+    );
+  }
+
+  Widget _portionsCounter(ValueNotifier<int> portions) {
+    const minValue = 1;
+    const maxValue = 50;
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Row(
+        children: [
+          Expanded(child: Text(str.portions)),
+          IconButton(
+            icon: const Icon(Icons.remove_circle_outline),
+            onPressed: portions.value <= minValue
+                ? null
+                : () => portions.value--,
+          ),
+          Text(
+            '${portions.value}',
+            style: const TextStyle(fontSize: 18.0),
+          ),
+          IconButton(
+            icon: const Icon(Icons.add_circle_outline),
+            onPressed: portions.value >= maxValue
+                ? null
+                : () => portions.value++,
+          ),
         ],
       ),
     );
