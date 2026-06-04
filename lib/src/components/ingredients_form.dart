@@ -9,26 +9,35 @@ import 'package:myhome/src/models/ingredients.dart';
 
 class IngredientsForm extends HookConsumerWidget {
   final _ingredientFormKey = GlobalKey<FormState>();
-  final ingredients = useState<Ingredients>(const Ingredients([]));
-  final invalidInput = useState<bool>(false);
+  final ValueNotifier<Ingredients> ingredients;
+  final ValueNotifier<bool> invalidInput;
 
   final Color onInvalidInputColor = const Color.fromARGB(255, 234, 2, 2);
   late final ScaffoldMessengerState snackBar;
   late final AppLocalizations str;
 
-  IngredientsForm({super.key});
+  // Hooks are kept in the same order as the original field initializers
+  // (ingredients then invalidInput) so flutter_hooks stays consistent.
+  IngredientsForm({super.key, Ingredients? initialIngredients})
+      : ingredients = useState(initialIngredients ?? const Ingredients([])),
+        invalidInput = useState<bool>(false);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final quantityController = useTextEditingController();
     final ingredientController = useTextEditingController();
-    final scrollController = ScrollController();
 
     snackBar = ScaffoldMessenger.of(context);
     str = context.l;
 
     void addIngredients(Ingredients newIngredients) {
       ingredients.value += newIngredients;
+    }
+
+    void removeIngredientAt(int index) {
+      final list = [...ingredients.value.ingredientsList];
+      list.removeAt(index);
+      ingredients.value = Ingredients(list);
     }
 
     useEffect(() {
@@ -50,7 +59,7 @@ class IngredientsForm extends HookConsumerWidget {
               children: [
                 _ingredientInputWidget(
                     ingredientController, quantityController, addIngredients),
-                _ingredientsView(scrollController, ingredients.value),
+                _ingredientsView(ingredients.value, removeIngredientAt),
               ],
             ),
           ),
@@ -60,27 +69,32 @@ class IngredientsForm extends HookConsumerWidget {
   }
 
   Widget _ingredientsView(
-      ScrollController scrollController, Ingredients ingredients) {
-    final ingredientsController = useTextEditingController();
+    Ingredients ingredients,
+    void Function(int index) onRemoveAt,
+  ) {
+    final list = ingredients.ingredientsList;
+    if (list.isEmpty) return const SizedBox(height: 8.0);
 
-    useEffect(() {
-      ingredientsController.text = ingredients.formattingToString();
-      return null;
-    }, [ingredients]);
-
-    return Scrollbar(
-      scrollbarOrientation: ScrollbarOrientation.bottom,
-      controller: scrollController,
-      thumbVisibility: true,
-      child: TextField(
-        scrollController: scrollController,
-        readOnly: true,
-        controller: ingredientsController,
-        decoration: const InputDecoration(
-            border: InputBorder.none, contentPadding: EdgeInsets.all(8.0)),
-        maxLines: 5,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Wrap(
+        spacing: 8.0,
+        runSpacing: 4.0,
+        children: [
+          for (var i = 0; i < list.length; i++)
+            Chip(
+              label: Text(_formatIngredient(list[i])),
+              deleteIcon: const Icon(Icons.close, size: 18.0),
+              onDeleted: () => onRemoveAt(i),
+            ),
+        ],
       ),
     );
+  }
+
+  String _formatIngredient(Ingredient ingredient) {
+    if (ingredient.quantity.trim().isEmpty) return ingredient.name;
+    return '${ingredient.name}: ${ingredient.quantity}';
   }
 
   Widget _ingredientInputWidget(

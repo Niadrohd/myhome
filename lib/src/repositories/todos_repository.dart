@@ -11,17 +11,83 @@ class TodosRepository {
       _fs.collection('households').doc(householdId).collection('todoLists');
 
   Stream<List<TodoList>> watchTodoLists(String householdId) {
-    return _todoListsRef(householdId)
-        .orderBy('createdAt', descending: true)
-        .snapshots()
-        .map((s) => s.docs.map((d) => TodoList.fromJson(d.data(), d.id)).toList());
+    return _todoListsRef(householdId).snapshots().map((s) {
+      final lists =
+          s.docs.map((d) => TodoList.fromJson(d.data(), d.id)).toList();
+      lists.sort(_compareLists);
+      return lists;
+    });
   }
 
-  Future<void> createTodoList(String householdId, String name) {
-    return _todoListsRef(householdId).add({
+  /// Sorts by explicit [TodoList.order] ascending. Lists without an order set
+  /// (`-1`, legacy) sort after the ordered ones, newest first.
+  static int _compareLists(TodoList a, TodoList b) {
+    final ao = a.order;
+    final bo = b.order;
+    if (ao >= 0 && bo >= 0) return ao.compareTo(bo);
+    if (ao >= 0) return -1;
+    if (bo >= 0) return 1;
+    return b.createdAt.compareTo(a.createdAt);
+  }
+
+  Future<void> createTodoList(String householdId, String name) async {
+    final snap = await _todoListsRef(householdId).get();
+    await _todoListsRef(householdId).add({
       'name': name.trim(),
       'items': <Map<String, dynamic>>[],
       'createdAt': FieldValue.serverTimestamp(),
+      // Append at the end of the current lists.
+      'order': snap.size,
+    });
+  }
+
+  /// Persists a new ordering of the lists. [orderedListIds] must be the list
+  /// ids in their desired display order.
+  Future<void> reorderTodoLists(
+    String householdId,
+    List<String> orderedListIds,
+  ) {
+    final batch = _fs.batch();
+    for (var i = 0; i < orderedListIds.length; i++) {
+      batch.update(
+        _todoListsRef(householdId).doc(orderedListIds[i]),
+        {'order': i},
+      );
+    }
+    return batch.commit();
+  }
+
+  /// Persists a new ordering of the items within a list. [orderedItemIds] must
+  /// be the item ids in their desired display order.
+  Future<void> reorderItems(
+    String householdId,
+    String listId,
+    List<String> orderedItemIds,
+  ) async {
+    final ref = _todoListsRef(householdId).doc(listId);
+    await _fs.runTransaction((tx) async {
+      final snap = await tx.get(ref);
+      final data = snap.data();
+      if (data == null) return;
+
+      final items = (data['items'] as List<dynamic>? ?? [])
+          .whereType<Map<String, dynamic>>()
+          .map((item) => TodoItem.fromJson(item))
+          .toList();
+
+      final byId = {for (final item in items) item.id: item};
+      final reordered = <TodoItem>[
+        for (final id in orderedItemIds)
+          if (byId.containsKey(id)) byId[id]!,
+      ];
+      // Safety net: keep any items not mentioned in the new order.
+      for (final item in items) {
+        if (!orderedItemIds.contains(item.id)) reordered.add(item);
+      }
+
+      tx.update(ref, {
+        'items': reordered.map((item) => item.toJson()).toList(),
+      });
     });
   }
 

@@ -67,7 +67,7 @@ class _TodoListDetailsContentState
 
   @override
   Widget build(BuildContext context) {
-    final sortedItems = widget.todoList.sortedItems;
+    final items = widget.todoList.sortedItems;
 
     return Scaffold(
       appBar: AppBar(
@@ -119,7 +119,7 @@ class _TodoListDetailsContentState
           ),
           // Items list
           Expanded(
-            child: sortedItems.isEmpty
+            child: items.isEmpty
                 ? Center(
                     child: Padding(
                       padding: const EdgeInsets.all(24.0),
@@ -130,13 +130,17 @@ class _TodoListDetailsContentState
                       ),
                     ),
                   )
-                : ListView.builder(
-                    itemCount: sortedItems.length,
+                : ReorderableListView.builder(
+                    buildDefaultDragHandles: false,
+                    itemCount: items.length,
+                    onReorder: (oldIndex, newIndex) =>
+                        _reorderItems(items, oldIndex, newIndex),
                     itemBuilder: (context, index) {
-                      final item = sortedItems[index];
+                      final item = items[index];
                       final isCompleted = item.isCompleted;
 
                       return Card(
+                        key: ValueKey(item.id),
                         margin: const EdgeInsets.symmetric(
                           horizontal: 16.0,
                           vertical: 4.0,
@@ -162,11 +166,29 @@ class _TodoListDetailsContentState
                                   : Colors.black,
                             ),
                           ),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.delete_outline),
-                            onPressed: () {
-                              _deleteItem(item.id);
-                            },
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.edit),
+                                onPressed: () {
+                                  _showEditItemDialog(item.id, item.text);
+                                },
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.delete_outline),
+                                onPressed: () {
+                                  _deleteItem(item.id);
+                                },
+                              ),
+                              ReorderableDragStartListener(
+                                index: index,
+                                child: const Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                  child: Icon(Icons.drag_handle),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       );
@@ -213,5 +235,60 @@ class _TodoListDetailsContentState
 
     final repo = ref.read(todosRepositoryProvider);
     await repo.deleteItem(householdId, widget.listId, itemId);
+  }
+
+  void _showEditItemDialog(String itemId, String currentText) {
+    final controller = TextEditingController(text: currentText);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit Task'),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(
+            hintText: 'Task',
+            border: OutlineInputBorder(),
+          ),
+          autofocus: true,
+          onSubmitted: (_) => Navigator.pop(context, controller.text),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, controller.text),
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    ).then((newText) async {
+      if (newText == null || newText.trim().isEmpty) return;
+
+      final householdId = ref.read(currentHouseholdIdProvider).value;
+      if (householdId == null) return;
+
+      final repo = ref.read(todosRepositoryProvider);
+      await repo.updateItemText(householdId, widget.listId, itemId, newText);
+    });
+  }
+
+  void _reorderItems(List<dynamic> items, int oldIndex, int newIndex) {
+    // ReorderableListView reports an insertion index; adjust when moving down.
+    if (newIndex > oldIndex) newIndex -= 1;
+    final ids = items.map((item) => item.id as String).toList();
+    final id = ids.removeAt(oldIndex);
+    ids.insert(newIndex, id);
+    _persistItemOrder(ids);
+  }
+
+  void _persistItemOrder(List<String> orderedItemIds) {
+    final householdId = ref.read(currentHouseholdIdProvider).value;
+    if (householdId == null) return;
+    ref
+        .read(todosRepositoryProvider)
+        .reorderItems(householdId, widget.listId, orderedItemIds);
   }
 }

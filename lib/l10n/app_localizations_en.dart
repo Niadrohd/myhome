@@ -57,6 +57,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get myRecipes => 'My recipes';
 
   @override
+  String get search => 'Search';
+
+  @override
+  String get portions => 'Portions';
+
+  @override
   String get noRecipesYetMessage => 'No registered recipe yet';
 
   @override

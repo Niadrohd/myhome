@@ -46,15 +46,18 @@ class PlannedRecipesRepository {
 
   Future<void> switchRecipe(
     String householdId,
-    String recipeId,
-  ) async {
+    String recipeId, {
+    int portions = 2,
+  }) async {
     final docs = await _plannedRef(householdId)
         .where('recipe_id', isEqualTo: recipeId)
         .get();
     if (docs.docs.isNotEmpty) {
       await docs.docs.first.reference.delete();
     } else {
-      await addPlannedRecipe(householdId, recipeId: recipeId);
+      // Seed the planned quantity from the recipe's portions; the two are
+      // independent afterwards.
+      await addPlannedRecipe(householdId, recipeId: recipeId, quantity: portions);
     }
   }
 

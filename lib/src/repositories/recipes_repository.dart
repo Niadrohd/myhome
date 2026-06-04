@@ -24,12 +24,36 @@ class RecipesRepository {
     required int cookingTime,
     required String link,
     required Ingredients ingredients,
+    required int portions,
   }) {
     return _recipesRef(householdId).add({
       'name': name.trim(),
       'preparationTime': preparationTime,
       'cookingTime': cookingTime,
       'link': link.trim(),
+      'portions': portions,
+      'ingredients': ingredients.ingredientsList
+          .map((i) => {'name': i.name, 'quantity': i.quantity})
+          .toList(),
+    });
+  }
+
+  Future<void> updateRecipe(
+    String householdId,
+    String recipeId, {
+    required String name,
+    required int preparationTime,
+    required int cookingTime,
+    required String link,
+    required Ingredients ingredients,
+    required int portions,
+  }) {
+    return _recipesRef(householdId).doc(recipeId).update({
+      'name': name.trim(),
+      'preparationTime': preparationTime,
+      'cookingTime': cookingTime,
+      'link': link.trim(),
+      'portions': portions,
       'ingredients': ingredients.ingredientsList
           .map((i) => {'name': i.name, 'quantity': i.quantity})
           .toList(),
@@ -59,6 +83,7 @@ class RecipesRepository {
       cookingTime: (data['cookingTime'] as num?)?.toInt() ?? 0,
       link: (data['link'] as String?) ?? '',
       ingredients: ingredients,
+      portions: (data['portions'] as num?)?.toInt() ?? 2,
     );
   }
 }

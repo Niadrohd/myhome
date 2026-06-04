@@ -10,6 +10,7 @@ class Recipe {
   final int cookingTime;
   final String link;
   final Ingredients ingredients;
+  final int portions;
 
   const Recipe({
     required this.id,
@@ -18,6 +19,7 @@ class Recipe {
     required this.cookingTime,
     required this.link,
     required this.ingredients,
+    this.portions = 2,
   });
 
   Recipe copyWith({
@@ -27,6 +29,7 @@ class Recipe {
     int? cookingTime,
     String? link,
     Ingredients? ingredients,
+    int? portions,
   }) =>
       Recipe(
         id: id ?? this.id,
@@ -35,6 +38,7 @@ class Recipe {
         cookingTime: cookingTime ?? this.cookingTime,
         link: link ?? this.link,
         ingredients: ingredients ?? this.ingredients,
+        portions: portions ?? this.portions,
       );
 
   Recipe removeIngredient(Ingredient ingredient) {
@@ -55,9 +59,10 @@ class Recipe {
           preparationTime == other.preparationTime &&
           cookingTime == other.cookingTime &&
           link == other.link &&
-          ingredients == other.ingredients;
+          ingredients == other.ingredients &&
+          portions == other.portions;
 
   @override
-  int get hashCode =>
-      Object.hash(id, name, preparationTime, cookingTime, link, ingredients);
+  int get hashCode => Object.hash(
+      id, name, preparationTime, cookingTime, link, ingredients, portions);
 }
