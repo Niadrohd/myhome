@@ -72,20 +72,35 @@ class RecipesListPage extends HookConsumerWidget {
               leading: const CircleAvatar(
                 foregroundImage: AssetImage('assets/images/repas_img.jpg'),
               ),
-              trailing: IconButton(
-                icon: isFavoriteAsync.maybeWhen(
-                  data: (isFav) => isFav
-                      ? const Icon(Icons.favorite)
-                      : const Icon(Icons.favorite_border),
-                  orElse: () => const Icon(Icons.favorite_border),
-                ),
-                onPressed: () async {
-                  final hid = ref.read(currentHouseholdIdProvider).value;
-                  if (hid == null) return;
-                  await ref
-                      .read(plannedRecipesRepositoryProvider)
-                      .switchRecipe(hid, recipe.id);
-                },
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(
+                        context,
+                        RoutesName.createRecipe.path,
+                        arguments: <String, Recipe>{'recipe': recipe},
+                      );
+                    },
+                  ),
+                  IconButton(
+                    icon: isFavoriteAsync.maybeWhen(
+                      data: (isFav) => isFav
+                          ? const Icon(Icons.favorite)
+                          : const Icon(Icons.favorite_border),
+                      orElse: () => const Icon(Icons.favorite_border),
+                    ),
+                    onPressed: () async {
+                      final hid = ref.read(currentHouseholdIdProvider).value;
+                      if (hid == null) return;
+                      await ref
+                          .read(plannedRecipesRepositoryProvider)
+                          .switchRecipe(hid, recipe.id);
+                    },
+                  ),
+                ],
               ),
               onTap: () {
                 Navigator.pushReplacementNamed(

@@ -36,6 +36,26 @@ class RecipesRepository {
     });
   }
 
+  Future<void> updateRecipe(
+    String householdId,
+    String recipeId, {
+    required String name,
+    required int preparationTime,
+    required int cookingTime,
+    required String link,
+    required Ingredients ingredients,
+  }) {
+    return _recipesRef(householdId).doc(recipeId).update({
+      'name': name.trim(),
+      'preparationTime': preparationTime,
+      'cookingTime': cookingTime,
+      'link': link.trim(),
+      'ingredients': ingredients.ingredientsList
+          .map((i) => {'name': i.name, 'quantity': i.quantity})
+          .toList(),
+    });
+  }
+
   Future<void> deleteRecipe(String householdId, String recipeId) {
     return _recipesRef(householdId).doc(recipeId).delete();
   }

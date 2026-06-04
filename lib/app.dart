@@ -2,6 +2,7 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:myhome/routes/named_routes.dart';
+import 'package:myhome/src/models/recipe.dart';
 import 'package:myhome/src/pages/add_recipe_page.dart';
 import 'package:myhome/src/pages/auth_gate.dart';
 import 'package:myhome/src/pages/menu_page.dart';
@@ -46,7 +47,10 @@ class MyHomeApp extends StatelessWidget {
         if (settings.name == RoutesName.recipesList.path) {
           return customPageRoute(const RecipesListPage());
         } else if (settings.name == RoutesName.createRecipe.path) {
-          return customPageRoute(const AddRecipePage());
+          final args = settings.arguments as Map<String, dynamic>?;
+          return customPageRoute(
+            AddRecipePage(recipe: args?['recipe'] as Recipe?),
+          );
         } else if (settings.name == RoutesName.menu.path) {
           return customPageRoute(const MenuPage());
         } else if (settings.name == RoutesName.recipeDetails.path) {

@@ -7,6 +7,7 @@ import 'package:myhome/routes/named_routes.dart';
 import 'package:myhome/src/components/ingredients_form.dart';
 import 'package:myhome/src/extensions/translations.dart';
 import 'package:myhome/src/models/ingredients.dart';
+import 'package:myhome/src/models/recipe.dart';
 import 'package:myhome/src/providers/household_providers.dart';
 import 'package:myhome/src/providers/recipes_provider.dart';
 
@@ -14,16 +15,22 @@ class CreateRecipeForm extends HookConsumerWidget {
   final _formKey = GlobalKey<FormState>();
   late AppLocalizations str;
 
-  CreateRecipeForm({super.key});
+  /// When provided, the form edits this recipe instead of creating a new one.
+  final Recipe? recipe;
+
+  CreateRecipeForm({super.key, this.recipe});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final nameController = useTextEditingController();
-    final cookingTimeController = useTextEditingController();
-    final preparationTimeController = useTextEditingController();
-    final linkController = useTextEditingController();
+    final nameController = useTextEditingController(text: recipe?.name);
+    final cookingTimeController =
+        useTextEditingController(text: recipe?.cookingTime.toString());
+    final preparationTimeController =
+        useTextEditingController(text: recipe?.preparationTime.toString());
+    final linkController = useTextEditingController(text: recipe?.link);
 
-    final ingredientsForm = IngredientsForm();
+    final ingredientsForm =
+        IngredientsForm(initialIngredients: recipe?.ingredients);
 
     str = context.l;
 
@@ -36,20 +43,37 @@ class CreateRecipeForm extends HookConsumerWidget {
       };
     }, []);
 
-    void handleAddRecipe() async {
+    void handleSaveRecipe() async {
       if (_formKey.currentState!.validate()) {
         final hid = ref.read(currentHouseholdIdProvider).value;
         if (hid == null) return;
-        await ref.read(recipesRepositoryProvider).addRecipe(
-              hid,
-              name: nameController.text,
-              preparationTime:
-                  int.tryParse(preparationTimeController.text) ?? 0,
-              cookingTime: int.tryParse(cookingTimeController.text) ?? 0,
-              link: linkController.text,
-              ingredients: Ingredients(
-                  ingredientsForm.ingredients.value.ingredientsList),
-            );
+        final repo = ref.read(recipesRepositoryProvider);
+        final ingredients =
+            Ingredients(ingredientsForm.ingredients.value.ingredientsList);
+        final preparationTime =
+            int.tryParse(preparationTimeController.text) ?? 0;
+        final cookingTime = int.tryParse(cookingTimeController.text) ?? 0;
+
+        if (recipe == null) {
+          await repo.addRecipe(
+            hid,
+            name: nameController.text,
+            preparationTime: preparationTime,
+            cookingTime: cookingTime,
+            link: linkController.text,
+            ingredients: ingredients,
+          );
+        } else {
+          await repo.updateRecipe(
+            hid,
+            recipe!.id,
+            name: nameController.text,
+            preparationTime: preparationTime,
+            cookingTime: cookingTime,
+            link: linkController.text,
+            ingredients: ingredients,
+          );
+        }
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(str.savedRecipeMessage(nameController.text))));
         Navigator.pushReplacementNamed(context, RoutesName.recipesList.path);
@@ -72,7 +96,7 @@ class CreateRecipeForm extends HookConsumerWidget {
               validate: false),
           ingredientsForm,
           const SizedBox(height: 20.0),
-          ElevatedButton(onPressed: handleAddRecipe, child: Text(str.save)),
+          ElevatedButton(onPressed: handleSaveRecipe, child: Text(str.save)),
         ],
       ),
     );
