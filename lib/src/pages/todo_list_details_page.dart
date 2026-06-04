@@ -170,6 +170,12 @@ class _TodoListDetailsContentState
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
+                                icon: const Icon(Icons.edit),
+                                onPressed: () {
+                                  _showEditItemDialog(item.id, item.text);
+                                },
+                              ),
+                              IconButton(
                                 icon: const Icon(Icons.delete_outline),
                                 onPressed: () {
                                   _deleteItem(item.id);
@@ -229,6 +235,44 @@ class _TodoListDetailsContentState
 
     final repo = ref.read(todosRepositoryProvider);
     await repo.deleteItem(householdId, widget.listId, itemId);
+  }
+
+  void _showEditItemDialog(String itemId, String currentText) {
+    final controller = TextEditingController(text: currentText);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit Task'),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(
+            hintText: 'Task',
+            border: OutlineInputBorder(),
+          ),
+          autofocus: true,
+          onSubmitted: (_) => Navigator.pop(context, controller.text),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, controller.text),
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    ).then((newText) async {
+      if (newText == null || newText.trim().isEmpty) return;
+
+      final householdId = ref.read(currentHouseholdIdProvider).value;
+      if (householdId == null) return;
+
+      final repo = ref.read(todosRepositoryProvider);
+      await repo.updateItemText(householdId, widget.listId, itemId, newText);
+    });
   }
 
   void _reorderItems(List<dynamic> items, int oldIndex, int newIndex) {
