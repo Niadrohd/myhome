@@ -25,94 +25,8 @@ class RecipesListPage extends HookConsumerWidget {
     Widget buildList(List<Recipe> recipes) {
       return ListView.builder(
         itemCount: recipes.length,
-        prototypeItem: const Dismissible(
-          key: Key(''),
-          child: ListTile(
-            leading: CircleAvatar(),
-            title: Text(''),
-            subtitle: Text(''),
-          ),
-        ),
         itemBuilder: (context, index) {
-          final recipe = recipes[index];
-          final isFavoriteAsync = ref.watch(isRecipePlannedProvider(recipe.id));
-
-          return Dismissible(
-            key: ValueKey(recipe.id),
-            direction: DismissDirection.endToStart,
-            onDismissed: (direction) async {
-              final hid = ref.read(currentHouseholdIdProvider).value;
-              if (hid == null) return;
-              await ref
-                  .read(recipesRepositoryProvider)
-                  .deleteRecipe(hid, recipe.id);
-              await ref
-                  .read(plannedRecipesRepositoryProvider)
-                  .deleteByRecipe(hid, recipe.id);
-            },
-            background: Container(),
-            secondaryBackground: Container(
-              color: MyColors.dismissibleDeleteColor,
-              alignment: Alignment.centerRight,
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(str.delete,
-                      style:
-                          const TextStyle(fontSize: 18, color: Colors.white)),
-                  const Padding(padding: EdgeInsets.symmetric(horizontal: 15)),
-                  const Icon(Icons.delete, color: Colors.white),
-                ],
-              ),
-            ),
-            child: ListTile(
-              title: Text(recipe.name.capitalize()),
-              subtitle: Text(
-                  'Time: ${recipe.preparationTime} + ${recipe.cookingTime} min'),
-              leading: const CircleAvatar(
-                foregroundImage: AssetImage('assets/images/repas_img.jpg'),
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      Navigator.pushReplacementNamed(
-                        context,
-                        RoutesName.createRecipe.path,
-                        arguments: <String, Recipe>{'recipe': recipe},
-                      );
-                    },
-                  ),
-                  IconButton(
-                    icon: isFavoriteAsync.maybeWhen(
-                      data: (isFav) => isFav
-                          ? const Icon(Icons.favorite)
-                          : const Icon(Icons.favorite_border),
-                      orElse: () => const Icon(Icons.favorite_border),
-                    ),
-                    onPressed: () async {
-                      final hid = ref.read(currentHouseholdIdProvider).value;
-                      if (hid == null) return;
-                      await ref
-                          .read(plannedRecipesRepositoryProvider)
-                          .switchRecipe(hid, recipe.id,
-                              portions: recipe.portions);
-                    },
-                  ),
-                ],
-              ),
-              onTap: () {
-                Navigator.pushReplacementNamed(
-                  context,
-                  RoutesName.recipeDetails.path,
-                  arguments: <String, Recipe>{'recipe': recipe},
-                );
-              },
-            ),
-          );
+          return _RecipeTile(recipe: recipes[index]);
         },
       );
     }
@@ -185,6 +99,103 @@ class RecipesListPage extends HookConsumerWidget {
             },
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _RecipeTile extends ConsumerWidget {
+  const _RecipeTile({required this.recipe});
+
+  final Recipe recipe;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final str = context.l;
+    final isFavoriteAsync = ref.watch(isRecipePlannedProvider(recipe.id));
+
+    return Dismissible(
+      key: ValueKey(recipe.id),
+      direction: DismissDirection.endToStart,
+      onDismissed: (direction) async {
+        final hid = ref.read(currentHouseholdIdProvider).value;
+        if (hid == null) return;
+        await ref.read(recipesRepositoryProvider).deleteRecipe(hid, recipe.id);
+        await ref
+            .read(plannedRecipesRepositoryProvider)
+            .deleteByRecipe(hid, recipe.id);
+      },
+      background: Container(),
+      secondaryBackground: Container(
+        color: MyColors.dismissibleDeleteColor,
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Flexible(
+              child: Text(
+                str.delete,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 18, color: Colors.white),
+              ),
+            ),
+            const Padding(padding: EdgeInsets.symmetric(horizontal: 15)),
+            const Icon(Icons.delete, color: Colors.white),
+          ],
+        ),
+      ),
+      child: ListTile(
+        title: Text(
+          recipe.name.capitalize(),
+          overflow: TextOverflow.ellipsis,
+          maxLines: 2,
+        ),
+        subtitle: Text(
+          'Time: ${recipe.preparationTime} + ${recipe.cookingTime} min',
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+        ),
+        leading: const CircleAvatar(
+          foregroundImage: AssetImage('assets/images/repas_img.jpg'),
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: () {
+                Navigator.pushReplacementNamed(
+                  context,
+                  RoutesName.createRecipe.path,
+                  arguments: <String, Recipe>{'recipe': recipe},
+                );
+              },
+            ),
+            IconButton(
+              icon: isFavoriteAsync.maybeWhen(
+                data: (isFav) => isFav
+                    ? const Icon(Icons.favorite)
+                    : const Icon(Icons.favorite_border),
+                orElse: () => const Icon(Icons.favorite_border),
+              ),
+              onPressed: () async {
+                final hid = ref.read(currentHouseholdIdProvider).value;
+                if (hid == null) return;
+                await ref
+                    .read(plannedRecipesRepositoryProvider)
+                    .switchRecipe(hid, recipe.id, portions: recipe.portions);
+              },
+            ),
+          ],
+        ),
+        onTap: () {
+          Navigator.pushReplacementNamed(
+            context,
+            RoutesName.recipeDetails.path,
+            arguments: <String, Recipe>{'recipe': recipe},
+          );
+        },
       ),
     );
   }
