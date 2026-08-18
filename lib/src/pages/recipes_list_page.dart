@@ -25,14 +25,6 @@ class RecipesListPage extends HookConsumerWidget {
     Widget buildList(List<Recipe> recipes) {
       return ListView.builder(
         itemCount: recipes.length,
-        prototypeItem: const Dismissible(
-          key: Key(''),
-          child: ListTile(
-            leading: CircleAvatar(),
-            title: Text(''),
-            subtitle: Text(''),
-          ),
-        ),
         itemBuilder: (context, index) {
           final recipe = recipes[index];
           final isFavoriteAsync = ref.watch(isRecipePlannedProvider(recipe.id));
@@ -58,18 +50,29 @@ class RecipesListPage extends HookConsumerWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(str.delete,
-                      style:
-                          const TextStyle(fontSize: 18, color: Colors.white)),
+                  Flexible(
+                    child: Text(
+                      str.delete,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                  ),
                   const Padding(padding: EdgeInsets.symmetric(horizontal: 15)),
                   const Icon(Icons.delete, color: Colors.white),
                 ],
               ),
             ),
             child: ListTile(
-              title: Text(recipe.name.capitalize()),
+              title: Text(
+                recipe.name.capitalize(),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+              ),
               subtitle: Text(
-                  'Time: ${recipe.preparationTime} + ${recipe.cookingTime} min'),
+                'Time: ${recipe.preparationTime} + ${recipe.cookingTime} min',
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
               leading: const CircleAvatar(
                 foregroundImage: AssetImage('assets/images/repas_img.jpg'),
               ),
