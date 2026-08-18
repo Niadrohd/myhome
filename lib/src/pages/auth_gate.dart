@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:myhome/src/providers/firebase_providers.dart';
 import 'auth_page.dart';
-import 'recipes_list_page.dart';
+import 'todo_lists_page.dart';
 
 class AuthGate extends ConsumerWidget {
   const AuthGate({super.key});
@@ -12,7 +12,7 @@ class AuthGate extends ConsumerWidget {
     final authAsync = ref.watch(authStateProvider);
 
     return authAsync.when(
-      data: (user) => user == null ? const AuthPage() : const RecipesListPage(),
+      data: (user) => user == null ? const AuthPage() : const TodoListsPage(),
       loading: () =>
           const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (e, _) => Scaffold(body: Center(child: Text('Erreur: $e'))),

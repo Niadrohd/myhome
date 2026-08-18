@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:myhome/routes/named_routes.dart';
 
 class NavigatorNotifier extends StateNotifier<RoutesName> {
-  NavigatorNotifier() : super(RoutesName.recipesList);
+  NavigatorNotifier() : super(RoutesName.todoLists);
 
   void changeRoute(RoutesName newRoute) {
     state = newRoute;
