@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:myhome/src/models/ingredient.dart';
 import 'package:myhome/src/models/ingredients.dart';
 import 'package:myhome/src/models/recipe.dart';
+import 'package:myhome/src/utils.dart';
 
 class RecipesRepository {
   RecipesRepository(this._fs);
@@ -27,7 +28,7 @@ class RecipesRepository {
     required int portions,
   }) {
     return _recipesRef(householdId).add({
-      'name': name.trim(),
+      'name': name.trim().capitalize(),
       'preparationTime': preparationTime,
       'cookingTime': cookingTime,
       'link': link.trim(),
@@ -49,7 +50,7 @@ class RecipesRepository {
     required int portions,
   }) {
     return _recipesRef(householdId).doc(recipeId).update({
-      'name': name.trim(),
+      'name': name.trim().capitalize(),
       'preparationTime': preparationTime,
       'cookingTime': cookingTime,
       'link': link.trim(),
