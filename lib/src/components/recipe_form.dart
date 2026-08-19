@@ -77,6 +77,7 @@ class CreateRecipeForm extends HookConsumerWidget {
             portions: portions.value,
           );
         }
+        if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(str.savedRecipeMessage(nameController.text))));
         Navigator.pushReplacementNamed(context, RoutesName.recipesList.path);

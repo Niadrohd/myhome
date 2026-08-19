@@ -133,7 +133,7 @@ class _TodoListDetailsContentState
                 : ReorderableListView.builder(
                     buildDefaultDragHandles: false,
                     itemCount: items.length,
-                    onReorder: (oldIndex, newIndex) =>
+                    onReorderItem: (oldIndex, newIndex) =>
                         _reorderItems(items, oldIndex, newIndex),
                     itemBuilder: (context, index) {
                       final item = items[index];
@@ -214,6 +214,7 @@ class _TodoListDetailsContentState
     );
 
     _newItemController.clear();
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Task added'),
@@ -276,8 +277,6 @@ class _TodoListDetailsContentState
   }
 
   void _reorderItems(List<dynamic> items, int oldIndex, int newIndex) {
-    // ReorderableListView reports an insertion index; adjust when moving down.
-    if (newIndex > oldIndex) newIndex -= 1;
     final ids = items.map((item) => item.id as String).toList();
     final id = ids.removeAt(oldIndex);
     ids.insert(newIndex, id);
