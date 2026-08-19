@@ -8,6 +8,7 @@ import 'package:myhome/src/pages/auth_gate.dart';
 import 'package:myhome/src/pages/menu_page.dart';
 import 'package:myhome/src/pages/recipe_details_page.dart';
 import 'package:myhome/src/pages/recipes_list_page.dart';
+import 'package:myhome/src/pages/shopping_list_page.dart';
 import 'package:myhome/src/pages/stock_page.dart';
 import 'package:myhome/src/pages/todo_lists_page.dart';
 import 'package:myhome/src/pages/todo_list_details_page.dart';
@@ -60,6 +61,8 @@ class MyHomeApp extends StatelessWidget {
           return customPageRoute(const StockPage());
         } else if (settings.name == RoutesName.todoLists.path) {
           return customPageRoute(const TodoListsPage());
+        } else if (settings.name == RoutesName.shoppingList.path) {
+          return customPageRoute(const ShoppingListPage());
         } else if (settings.name == '/todo_list_details') {
           final args = settings.arguments as Map<String, dynamic>;
           return customPageRoute(

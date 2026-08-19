@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:myhome/src/utils/unit.dart';
 import 'ingredient.dart';
 
 @immutable
@@ -19,7 +20,11 @@ class Ingredients {
   String formattingToString() {
     var str = '';
     for (var ingredient in ingredientsList) {
-      str = '$str ${ingredient.name}: ${ingredient.quantity};';
+      final quantity = ingredient.quantity;
+      final quantityLabel = quantity == null
+          ? ''
+          : ': $quantity ${ingredient.unit.shortLabel}'.trimRight();
+      str = '$str ${ingredient.name}$quantityLabel;';
     }
     return str.trim();
   }

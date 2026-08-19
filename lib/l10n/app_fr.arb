@@ -84,5 +84,18 @@
     "itemQuantityLabel": "Quantité",
     "itemUnitLabel": "Unité",
     "saveButtonLabel": "Enregistrer",
-    "cancelButtonLabel": "Annuler"
+    "cancelButtonLabel": "Annuler",
+    "createShoppingList": "Créer liste des courses",
+    "shoppingListTitle": "Liste de courses",
+    "noPlannedRecipesForShoppingList": "Aucune recette planifiée pour créer une liste de courses",
+    "unitNone": "Aucune unité",
+    "unitPiece": "Pièce(s)",
+    "unitGram": "Gramme(s)",
+    "unitKilogram": "Kilogramme(s)",
+    "unitMilliliter": "Millilitre(s)",
+    "unitCentiliter": "Centilitre(s)",
+    "unitLiter": "Litre(s)",
+    "unitTablespoon": "Cuillère(s) à soupe",
+    "unitTeaspoon": "Cuillère(s) à café",
+    "unitPinch": "Pincée(s)"
 }

@@ -346,6 +346,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancel'**
   String get cancelButtonLabel;
+
+  /// No description provided for @createShoppingList.
+  ///
+  /// In en, this message translates to:
+  /// **'Create shopping list'**
+  String get createShoppingList;
+
+  /// No description provided for @shoppingListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shopping list'**
+  String get shoppingListTitle;
+
+  /// No description provided for @noPlannedRecipesForShoppingList.
+  ///
+  /// In en, this message translates to:
+  /// **'No planned recipes to build a shopping list from'**
+  String get noPlannedRecipesForShoppingList;
+
+  /// No description provided for @unitNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No unit'**
+  String get unitNone;
+
+  /// No description provided for @unitPiece.
+  ///
+  /// In en, this message translates to:
+  /// **'Piece(s)'**
+  String get unitPiece;
+
+  /// No description provided for @unitGram.
+  ///
+  /// In en, this message translates to:
+  /// **'Gram(s)'**
+  String get unitGram;
+
+  /// No description provided for @unitKilogram.
+  ///
+  /// In en, this message translates to:
+  /// **'Kilogram(s)'**
+  String get unitKilogram;
+
+  /// No description provided for @unitMilliliter.
+  ///
+  /// In en, this message translates to:
+  /// **'Milliliter(s)'**
+  String get unitMilliliter;
+
+  /// No description provided for @unitCentiliter.
+  ///
+  /// In en, this message translates to:
+  /// **'Centiliter(s)'**
+  String get unitCentiliter;
+
+  /// No description provided for @unitLiter.
+  ///
+  /// In en, this message translates to:
+  /// **'Liter(s)'**
+  String get unitLiter;
+
+  /// No description provided for @unitTablespoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Tablespoon(s)'**
+  String get unitTablespoon;
+
+  /// No description provided for @unitTeaspoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Teaspoon(s)'**
+  String get unitTeaspoon;
+
+  /// No description provided for @unitPinch.
+  ///
+  /// In en, this message translates to:
+  /// **'Pinch(es)'**
+  String get unitPinch;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
