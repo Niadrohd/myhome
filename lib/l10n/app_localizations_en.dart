@@ -145,4 +145,43 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cancelButtonLabel => 'Cancel';
+
+  @override
+  String get createShoppingList => 'Create shopping list';
+
+  @override
+  String get shoppingListTitle => 'Shopping list';
+
+  @override
+  String get noPlannedRecipesForShoppingList => 'No planned recipes to build a shopping list from';
+
+  @override
+  String get unitNone => 'No unit';
+
+  @override
+  String get unitPiece => 'Piece(s)';
+
+  @override
+  String get unitGram => 'Gram(s)';
+
+  @override
+  String get unitKilogram => 'Kilogram(s)';
+
+  @override
+  String get unitMilliliter => 'Milliliter(s)';
+
+  @override
+  String get unitCentiliter => 'Centiliter(s)';
+
+  @override
+  String get unitLiter => 'Liter(s)';
+
+  @override
+  String get unitTablespoon => 'Tablespoon(s)';
+
+  @override
+  String get unitTeaspoon => 'Teaspoon(s)';
+
+  @override
+  String get unitPinch => 'Pinch(es)';
 }

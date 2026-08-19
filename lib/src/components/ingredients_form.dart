@@ -6,6 +6,7 @@ import 'package:myhome/l10n/app_localizations.dart';
 import 'package:myhome/src/extensions/translations.dart';
 import 'package:myhome/src/models/ingredient.dart';
 import 'package:myhome/src/models/ingredients.dart';
+import 'package:myhome/src/utils/unit.dart';
 
 class IngredientsForm extends HookConsumerWidget {
   final _ingredientFormKey = GlobalKey<FormState>();
@@ -26,6 +27,7 @@ class IngredientsForm extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final quantityController = useTextEditingController();
     final ingredientController = useTextEditingController();
+    final selectedUnit = useState<Unit>(Unit.none);
 
     snackBar = ScaffoldMessenger.of(context);
     str = context.l;
@@ -57,8 +59,8 @@ class IngredientsForm extends HookConsumerWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _ingredientInputWidget(
-                    ingredientController, quantityController, addIngredients),
+                _ingredientInputWidget(ingredientController,
+                    quantityController, selectedUnit, addIngredients),
                 _ingredientsView(ingredients.value, removeIngredientAt),
               ],
             ),
@@ -93,13 +95,17 @@ class IngredientsForm extends HookConsumerWidget {
   }
 
   String _formatIngredient(Ingredient ingredient) {
-    if (ingredient.quantity.trim().isEmpty) return ingredient.name;
-    return '${ingredient.name}: ${ingredient.quantity}';
+    final quantity = ingredient.quantity;
+    if (quantity == null || ingredient.unit == Unit.none) {
+      return ingredient.name;
+    }
+    return '${ingredient.name}: $quantity ${ingredient.unit.shortLabel}';
   }
 
   Widget _ingredientInputWidget(
     TextEditingController ingredientController,
     TextEditingController quantityController,
+    ValueNotifier<Unit> selectedUnit,
     Function addIngredients,
   ) {
     return Form(
@@ -116,23 +122,27 @@ class IngredientsForm extends HookConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Expanded(
-              flex: 2,
+              flex: 3,
               child: TextFormField(
                 controller: ingredientController,
                 decoration: _ingredientTextFieldDecoration(str.ingredient),
               ),
             ),
             Expanded(
-              flex: 1,
+              flex: 2,
               child: TextFormField(
                 controller: quantityController,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
                 decoration: _ingredientTextFieldDecoration(str.quantity),
               ),
             ),
+            _unitPicker(selectedUnit),
             IconButton.outlined(
               onPressed: () => _validateIngredientEntry(
                 ingredientController,
                 quantityController,
+                selectedUnit,
                 addIngredients,
               ),
               icon: const Icon(Icons.add),
@@ -143,26 +153,69 @@ class IngredientsForm extends HookConsumerWidget {
     );
   }
 
+  Widget _unitPicker(ValueNotifier<Unit> selectedUnit) {
+    return PopupMenuButton<Unit>(
+      initialValue: selectedUnit.value,
+      onSelected: (unit) => selectedUnit.value = unit,
+      itemBuilder: (context) => Unit.values
+          .map((unit) => PopupMenuItem(
+                value: unit,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(unit.localizedName(context)),
+                    if (unit == selectedUnit.value) const Icon(Icons.check),
+                  ],
+                ),
+              ))
+          .toList(),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(selectedUnit.value == Unit.none
+                ? str.unitNone
+                : selectedUnit.value.shortLabel),
+            const Icon(Icons.unfold_more_outlined, size: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _validateIngredientEntry(
     TextEditingController ingredientController,
     TextEditingController quantityController,
+    ValueNotifier<Unit> selectedUnit,
     Function addIngredients,
   ) async {
     final ingredientName = ingredientController.text;
-    if (ingredientName.isEmpty) {
+    final unit = selectedUnit.value;
+    final quantityText = quantityController.text.trim().replaceAll(',', '.');
+    final quantity = double.tryParse(quantityText);
+    final hasInvalidQuantity = unit != Unit.none && quantity == null;
+
+    if (ingredientName.isEmpty || hasInvalidQuantity) {
       snackBar.showSnackBar(SnackBar(
         backgroundColor: onInvalidInputColor,
-        content: Text(str.emptyIngredientMessage),
+        content: Text(ingredientName.isEmpty
+            ? str.emptyIngredientMessage
+            : str.invalidInputMessage),
       ));
       invalidInput.value = true;
       await Future.delayed(const Duration(seconds: 1));
       invalidInput.value = false;
     } else {
-      final ingredient =
-          Ingredient(name: ingredientName, quantity: quantityController.text);
+      final ingredient = Ingredient(
+        name: ingredientName,
+        quantity: unit == Unit.none ? null : quantity,
+        unit: unit,
+      );
       addIngredients(Ingredients([ingredient]));
       ingredientController.clear();
       quantityController.clear();
+      selectedUnit.value = Unit.none;
     }
   }
 }

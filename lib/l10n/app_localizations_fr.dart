@@ -145,4 +145,43 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get cancelButtonLabel => 'Annuler';
+
+  @override
+  String get createShoppingList => 'Créer liste des courses';
+
+  @override
+  String get shoppingListTitle => 'Liste de courses';
+
+  @override
+  String get noPlannedRecipesForShoppingList => 'Aucune recette planifiée pour créer une liste de courses';
+
+  @override
+  String get unitNone => 'Aucune unité';
+
+  @override
+  String get unitPiece => 'Pièce(s)';
+
+  @override
+  String get unitGram => 'Gramme(s)';
+
+  @override
+  String get unitKilogram => 'Kilogramme(s)';
+
+  @override
+  String get unitMilliliter => 'Millilitre(s)';
+
+  @override
+  String get unitCentiliter => 'Centilitre(s)';
+
+  @override
+  String get unitLiter => 'Litre(s)';
+
+  @override
+  String get unitTablespoon => 'Cuillère(s) à soupe';
+
+  @override
+  String get unitTeaspoon => 'Cuillère(s) à café';
+
+  @override
+  String get unitPinch => 'Pincée(s)';
 }

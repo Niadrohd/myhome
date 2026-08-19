@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:myhome/routes/named_routes.dart';
 import 'package:myhome/src/components/planned_recipe_tile.dart';
 import 'package:myhome/src/extensions/translations.dart';
 import 'package:myhome/src/models/planned_recipe.dart';
@@ -36,10 +37,13 @@ class MenuPage extends HookConsumerWidget {
                     backgroundColor:
                         WidgetStatePropertyAll<Color>(MyColors.terracotta),
                   ),
-                  onPressed: () {},
-                  child: const Text(
-                    'Créer liste des courses',
-                    style: TextStyle(color: Colors.white),
+                  onPressed: () => Navigator.pushNamed(
+                    context,
+                    RoutesName.shoppingList.path,
+                  ),
+                  child: Text(
+                    str.createShoppingList,
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
               ],
