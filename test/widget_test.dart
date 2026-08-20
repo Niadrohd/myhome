@@ -1,29 +1,51 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
+import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:myhome/app.dart';
+import 'package:myhome/src/pages/auth_page.dart';
+import 'package:myhome/src/providers/firebase_providers.dart';
+import 'package:myhome/src/providers/household_providers.dart';
+
+Widget wrapApp(List<Override> overrides) {
+  return ProviderScope(
+    overrides: overrides,
+    child: EasyDynamicThemeWidget(
+      initialThemeMode: ThemeMode.light,
+      child: const MyHomeApp(),
+    ),
+  );
+}
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyHomeApp());
+  testWidgets('Signed-out user sees the auth page', (tester) async {
+    await tester.pumpWidget(wrapApp([
+      authStateProvider.overrideWith((ref) => Stream.value(null)),
+      firebaseAuthProvider.overrideWithValue(MockFirebaseAuth()),
+    ]));
+    await tester.pumpAndSettle();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(find.byType(AuthPage), findsOneWidget);
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  testWidgets('Signed-in user lands on their todo lists', (tester) async {
+    final mockUser = MockUser(uid: 'test-uid');
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    await tester.pumpWidget(wrapApp([
+      authStateProvider.overrideWith((ref) => Stream.value(mockUser)),
+      firestoreProvider.overrideWithValue(FakeFirebaseFirestore()),
+      currentHouseholdIdProvider.overrideWith(
+        (ref) => Stream.value('household-1'),
+      ),
+    ]));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Todo Lists'), findsOneWidget);
+    expect(
+      find.text('No todo lists yet. Create one to get started!'),
+      findsOneWidget,
+    );
   });
 }
