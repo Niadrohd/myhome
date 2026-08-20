@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:myhome/routes/named_routes.dart';
+import 'package:myhome/src/components/add_fab.dart';
 import 'package:myhome/src/models/recipe.dart';
 import 'package:myhome/src/my_navigator.dart';
 import 'package:myhome/theme/colors.dart';
@@ -58,16 +59,12 @@ class RecipeDetailsPage extends ConsumerWidget {
                 ],
               ),
             ),
-            Positioned(
-              bottom: 16,
-              right: 16,
-              child: FloatingActionButton(
-                onPressed: () => Navigator.pushReplacementNamed(
-                  context,
-                  RoutesName.createRecipe.path,
-                  arguments: <String, Recipe>{'recipe': recipe},
-                ),
-                child: const Icon(Icons.edit),
+            AddFab(
+              icon: Icons.edit,
+              onPressed: () => Navigator.pushReplacementNamed(
+                context,
+                RoutesName.createRecipe.path,
+                arguments: <String, Recipe>{'recipe': recipe},
               ),
             ),
           ],
