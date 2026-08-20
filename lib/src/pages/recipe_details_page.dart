@@ -18,6 +18,7 @@ class RecipeDetailsPage extends ConsumerWidget {
       title: recipe.name,
       page: Scaffold(
         body: Stack(
+          fit: StackFit.expand,
           children: [
             Padding(
               padding: const EdgeInsets.all(defaultSymmetricPadding),
