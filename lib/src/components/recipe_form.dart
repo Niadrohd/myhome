@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:myhome/l10n/app_localizations.dart';
@@ -13,7 +12,6 @@ import 'package:myhome/src/providers/recipes_provider.dart';
 
 class CreateRecipeForm extends HookConsumerWidget {
   final _formKey = GlobalKey<FormState>();
-  late AppLocalizations str;
 
   /// When provided, the form edits this recipe instead of creating a new one.
   final Recipe? recipe;
@@ -33,7 +31,7 @@ class CreateRecipeForm extends HookConsumerWidget {
     final ingredientsForm =
         IngredientsForm(initialIngredients: recipe?.ingredients);
 
-    str = context.l;
+    final str = context.l;
 
     useEffect(() {
       return () {
@@ -89,16 +87,16 @@ class CreateRecipeForm extends HookConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _titledRecipeTextField(str.recipeName, nameController),
+          _titledRecipeTextField(str.recipeName, nameController, str),
           _titledRecipeTextField(
-              str.preparationTime('(mins)'), preparationTimeController,
+              str.preparationTime('(mins)'), preparationTimeController, str,
               validate: false),
           _titledRecipeTextField(
-              str.cookingTime('(mins)'), cookingTimeController,
+              str.cookingTime('(mins)'), cookingTimeController, str,
               validate: false),
-          _titledRecipeTextField(str.recipeLink, linkController,
+          _titledRecipeTextField(str.recipeLink, linkController, str,
               validate: false),
-          _portionsCounter(portions),
+          _portionsCounter(portions, str),
           ingredientsForm,
           const SizedBox(height: 20.0),
           ElevatedButton(onPressed: handleSaveRecipe, child: Text(str.save)),
@@ -107,7 +105,7 @@ class CreateRecipeForm extends HookConsumerWidget {
     );
   }
 
-  Widget _portionsCounter(ValueNotifier<int> portions) {
+  Widget _portionsCounter(ValueNotifier<int> portions, AppLocalizations str) {
     const minValue = 1;
     const maxValue = 50;
     return Padding(
@@ -138,7 +136,8 @@ class CreateRecipeForm extends HookConsumerWidget {
 
   Widget _titledRecipeTextField(
     String title,
-    TextEditingController controller, {
+    TextEditingController controller,
+    AppLocalizations str, {
     bool validate = true,
   }) {
     return Padding(

@@ -7,7 +7,6 @@ import 'package:myhome/src/models/planned_recipe.dart';
 import 'package:myhome/src/my_navigator.dart';
 import 'package:myhome/src/providers/household_providers.dart';
 import 'package:myhome/src/providers/planned_recipes_provider.dart';
-import 'package:myhome/src/providers/recipes_provider.dart';
 import 'package:myhome/src/utils/week.dart';
 import 'package:myhome/theme/colors.dart';
 
@@ -17,7 +16,6 @@ class MenuPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final plannedAsync = ref.watch(plannedRecipesProvider);
-    final recipesAsync = ref.watch(recipesProvider);
     final str = context.l;
 
     Widget buildMenu(List<PlannedRecipe> plannedRecipes) {
