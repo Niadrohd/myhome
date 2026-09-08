@@ -13,8 +13,6 @@ class IngredientsForm extends HookConsumerWidget {
   final ValueNotifier<bool> invalidInput;
 
   final Color onInvalidInputColor = const Color.fromARGB(255, 234, 2, 2);
-  late final ScaffoldMessengerState snackBar;
-  late final AppLocalizations str;
 
   // Hooks are kept in the same order as the original field initializers
   // (ingredients then invalidInput) so flutter_hooks stays consistent.
@@ -28,8 +26,8 @@ class IngredientsForm extends HookConsumerWidget {
     final ingredientController = useTextEditingController();
     final selectedUnit = useState<Unit>(Unit.none);
 
-    snackBar = ScaffoldMessenger.of(context);
-    str = context.l;
+    final snackBar = ScaffoldMessenger.of(context);
+    final str = context.l;
 
     void addIngredients(Ingredients newIngredients) {
       ingredients.value += newIngredients;
@@ -59,7 +57,8 @@ class IngredientsForm extends HookConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _ingredientInputWidget(ingredientController,
-                    quantityController, selectedUnit, addIngredients),
+                    quantityController, selectedUnit, addIngredients,
+                    str: str, snackBar: snackBar),
                 _ingredientsView(ingredients.value, removeIngredientAt),
               ],
             ),
@@ -105,8 +104,10 @@ class IngredientsForm extends HookConsumerWidget {
     TextEditingController ingredientController,
     TextEditingController quantityController,
     ValueNotifier<Unit> selectedUnit,
-    Function addIngredients,
-  ) {
+    Function addIngredients, {
+    required AppLocalizations str,
+    required ScaffoldMessengerState snackBar,
+  }) {
     return Form(
       key: _ingredientFormKey,
       child: Container(
@@ -136,13 +137,15 @@ class IngredientsForm extends HookConsumerWidget {
                 decoration: _ingredientTextFieldDecoration(str.quantity),
               ),
             ),
-            _unitPicker(selectedUnit),
+            _unitPicker(selectedUnit, str),
             IconButton.outlined(
               onPressed: () => _validateIngredientEntry(
                 ingredientController,
                 quantityController,
                 selectedUnit,
                 addIngredients,
+                str: str,
+                snackBar: snackBar,
               ),
               icon: const Icon(Icons.add),
             ),
@@ -152,7 +155,7 @@ class IngredientsForm extends HookConsumerWidget {
     );
   }
 
-  Widget _unitPicker(ValueNotifier<Unit> selectedUnit) {
+  Widget _unitPicker(ValueNotifier<Unit> selectedUnit, AppLocalizations str) {
     return PopupMenuButton<Unit>(
       initialValue: selectedUnit.value,
       onSelected: (unit) => selectedUnit.value = unit,
@@ -187,8 +190,10 @@ class IngredientsForm extends HookConsumerWidget {
     TextEditingController ingredientController,
     TextEditingController quantityController,
     ValueNotifier<Unit> selectedUnit,
-    Function addIngredients,
-  ) async {
+    Function addIngredients, {
+    required AppLocalizations str,
+    required ScaffoldMessengerState snackBar,
+  }) async {
     final ingredientName = ingredientController.text;
     final unit = selectedUnit.value;
     final quantityText = quantityController.text.trim().replaceAll(',', '.');
